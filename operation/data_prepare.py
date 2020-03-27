@@ -1,5 +1,5 @@
 def filter_column_by_regex(data, column, regex):
-    return data[data[column].str.contains(regex) == True]
+    return data[data[column].astype(str).str.contains(regex) == True]
 
 
 def round_column_by_digits(column, digits):
