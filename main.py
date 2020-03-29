@@ -53,9 +53,11 @@ def main():
     #           ['title', 'success_factor', 'genres']].head(20))
     # print(data.columns)
     # print(get_genres_unique(data))
-    print(get_data_with_flatten_genres(data).sort_values(by='success_factor', ascending=False).head(20))
-
+    # print(get_data_with_flatten_genres(data[data['release_date'] == 10]).sort_values(by='success_factor', ascending=False).head(20))
     # save_movies_metadata_with_success_factor_to_file(data)
+    print(get_best_genres_by_month(data, 3).sort_values(by='popularity', ascending=False))
+
+    show_genres_by_month_histogram(data, 3)
 
 
 if __name__ == '__main__':

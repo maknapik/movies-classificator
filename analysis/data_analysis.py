@@ -1,6 +1,7 @@
 from preprocessing.data_loader import *
 
 import matplotlib.pyplot as plt
+import pandas
 
 
 def show_column_statistics(column):
@@ -57,4 +58,29 @@ def show_success_factor_histogram(data):
     plt.title('Success factor histogram')
     plt.ylabel('amount')
     plt.xlabel('success factor')
+    plt.show()
+
+
+def get_best_genres_by_month(data, month):
+    data = get_best_flatten_genres_by_month(data, month)
+
+    data = data.groupby('genres', as_index=False).count()[['genres', 'popularity']]
+
+    return data
+
+
+def get_best_flatten_genres_by_month(data, month):
+    return get_data_with_flatten_genres(data[data['release_date'] == month]) \
+        .sort_values(by='success_factor', ascending=False) \
+        .head(BEST_GENRES_BY_MOVIES_TAKEN_POSITIONS)
+
+
+def show_genres_by_month_histogram(data, month):
+    genres = get_best_flatten_genres_by_month(data, month)['genres']
+
+    plt.hist(genres, pandas.unique(genres), facecolor='blue', alpha=1)
+    plt.title('Genres histogram')
+    plt.suptitle('For month: {}'.format(month))
+    plt.ylabel('amount')
+    plt.xlabel('genre')
     plt.show()

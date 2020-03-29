@@ -105,7 +105,7 @@ def count_attribute_factor(max, contribution):
 
 
 def get_data_with_flatten_genres(data):
-    return data.set_index(['id', 'title', 'success_factor'])['genres'].apply(pandas.Series).stack().reset_index()
+    return data.explode('genres')
 
 
 def save_movies_metadata_with_success_factor_to_file(data):
@@ -113,4 +113,8 @@ def save_movies_metadata_with_success_factor_to_file(data):
 
 
 def get_movies_metadata_with_success_factor():
-    return pandas.read_csv(MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED)
+    data = pandas.read_csv(MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED)
+
+    data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
+
+    return data

@@ -17,6 +17,10 @@ BETA = 0.15
 RATING_MAX = 5
 GAMMA = 0.20
 
-VA_MAX = 10
-VC_MAX = 1000
+VA_MAX = 10  # vote_average max value
+VC_MAX = 1000  # vote_count max value
 DELTA = 0.50
+
+# analysis constants
+# number which indicates how many records should be taken when grouping by genre
+BEST_GENRES_BY_MOVIES_TAKEN_POSITIONS = 200
