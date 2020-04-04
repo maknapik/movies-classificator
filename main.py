@@ -7,6 +7,7 @@ from pandas import *
 import matplotlib.pyplot as plt
 import ast
 from preprocessing import data_loader as dl
+from preprocessing.data_prepare import *
 
 def main():
     pandas.set_option('display.max_rows', None)
@@ -60,8 +61,10 @@ def main():
     #show_genres_by_month_histogram(data, 3)
 
     credits = dl.get_credits()
-    data = dl.get_credits_features(credits)
-    print("CAST = \n", data['cast'][0:2], "CREW = \n", data['crew'][0:2], "IDS = \n", data['id'][0:2])
+    data = dl.prepare_credits_features(credits)
+    counter = 0
+    count_empty = 0
+    empty_list = filter_empty_movie_credits(data)
         
 
 if __name__ == '__main__':

@@ -16,3 +16,13 @@ def round_column_by_digits(column, digits):
 
 def column_values_to_int(column):
     return column.map(lambda x: int(x))
+
+"""filter movies ids which have empty crew and cast columns"""
+def filter_empty_movie_credits(data):
+
+    empty_credits_ids = []
+    for (cast, crew, id) in zip(data['cast'], data['crew'], data['id']):
+        if len(cast) == 0 and len(crew) == 0:
+            empty_credits_ids.append(id)
+            
+    return empty_credits_ids        

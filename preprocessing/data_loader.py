@@ -119,16 +119,18 @@ def get_movies_metadata_with_success_factor():
 
     return data
 
-def get_credits_features(data):
+# credits
+def prepare_credits_features(data):
     
     data['cast'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'character', 'name'), data['cast']))
     data['crew'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'job', 'name'), data['crew']))
     data['id'] =  column_values_to_int(data['id'])
+
     return data
 
 def get_essential_features(feature_data, *args):
     new_feat_data = []
-    
+
     for dict_elem in feature_data:
         new_dict_elem = {}
         for field in args:
@@ -136,3 +138,8 @@ def get_essential_features(feature_data, *args):
         new_feat_data.append(new_dict_elem)
     return new_feat_data    
 
+""" empty_credits contains ids of rows which have empty cast and crew columns"""
+def get_processed_credits(data, empty_credits):
+    data = data[data['id'].apply(lambda x: x not in empty_credits)]
+    return data
+    
