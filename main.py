@@ -6,13 +6,13 @@ from numpy import asarray
 from pandas import *
 import matplotlib.pyplot as plt
 import ast
-
+from preprocessing import data_loader as dl
 
 def main():
     pandas.set_option('display.max_rows', None)
     pandas.set_option('display.max_columns', None)
     pandas.set_option('display.width', None)
-    pandas.set_option('display.max_colwidth', -1)
+    pandas.set_option('display.max_colwidth', None)
 
     # data = get_movies_metadata()
 
@@ -48,17 +48,21 @@ def main():
 
     # print(data['success_factor'].sort_values(ascending=True).head(100))
 
-    data = get_movies_metadata_with_success_factor()
+    #data = get_movies_metadata_with_success_factor()
     # print(data[data['release_date'] == 10].sort_values(by='success_factor', ascending=False)[
     #           ['title', 'success_factor', 'genres']].head(20))
     # print(data.columns)
     # print(get_genres_unique(data))
     # print(get_data_with_flatten_genres(data[data['release_date'] == 10]).sort_values(by='success_factor', ascending=False).head(20))
     # save_movies_metadata_with_success_factor_to_file(data)
-    print(get_best_genres_by_month(data, 3).sort_values(by='popularity', ascending=False))
+    #print(get_best_genres_by_month(data, 3).sort_values(by='popularity', ascending=False))
 
-    show_genres_by_month_histogram(data, 3)
+    #show_genres_by_month_histogram(data, 3)
 
+    credits = dl.get_credits()
+    data = dl.get_credits_features(credits)
+    print("CAST = \n", data['cast'][0:2], "CREW = \n", data['crew'][0:2], "IDS = \n", data['id'][0:2])
+        
 
 if __name__ == '__main__':
     main()

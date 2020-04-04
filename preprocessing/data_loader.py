@@ -9,7 +9,7 @@ from configuration.CONSTANTS import *
 
 
 def get_credits():
-    return pandas.read_csv(CREDITS_PATH)
+    return pandas.read_csv(CREDITS_PATH)#.to_dict()
 
 
 def get_keywords():
@@ -118,3 +118,21 @@ def get_movies_metadata_with_success_factor():
     data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
 
     return data
+
+def get_credits_features(data):
+    
+    data['cast'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'character', 'name'), data['cast']))
+    data['crew'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'job', 'name'), data['crew']))
+    data['id'] =  column_values_to_int(data['id'])
+    return data
+
+def get_essential_features(feature_data, *args):
+    new_feat_data = []
+    
+    for dict_elem in feature_data:
+        new_dict_elem = {}
+        for field in args:
+            new_dict_elem[field] = dict_elem[field]
+        new_feat_data.append(new_dict_elem)
+    return new_feat_data    
+
