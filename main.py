@@ -62,8 +62,7 @@ def main():
 
     credits = dl.get_credits()
     data = dl.prepare_credits_features(credits)
-    counter = 0
-    count_empty = 0
+
     empty_list = filter_empty_movie_credits(data)
 
     data = dl.get_processed_credits(data, empty_list)
@@ -72,7 +71,8 @@ def main():
     res2 = count_workers_by_gender(data, 'crew')
     print("COUNT CAST MEN = {} and WOMEN = {} and NOT_DEFINED = {}".format(res1[0], res1[1], res1[2]))
     print("COUNT CREW MEN = {} and WOMEN = {} and NOT_DEFINED = {}".format(res2[0], res2[1], res2[2]))
-
+    #show_credits_people_by_gender([res1[0], res1[1], res1[2]], "cast_gender.png")
+    #show_credits_people_by_gender([res2[0], res2[1], res2[2]], "crew_gender.png")
 
 if __name__ == '__main__':
     main()

@@ -84,3 +84,16 @@ def show_genres_by_month_histogram(data, month):
     plt.ylabel('amount')
     plt.xlabel('genre')
     plt.show()
+
+# credits
+def show_credits_people_by_gender(genders_appearance, file_name):
+    data =  ["Man", "Woman", "Not_defined"]
+    gender_types = numpy.arange(len(data))
+    plt.bar(gender_types, genders_appearance, align='center', alpha=0.5)
+    plt.title('Genders histogram')
+    plt.xticks(gender_types, data)
+    plt.ylabel('amount')
+    plt.xlabel('gender')
+    for i,d in enumerate(genders_appearance):
+        plt.text(x=i , y = d , s=str(d), horizontalalignment='center')
+    plt.savefig(file_name)
