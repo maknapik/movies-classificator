@@ -3,6 +3,7 @@ from datetime import *
 import ast
 from sklearn.preprocessing import MinMaxScaler
 import numpy
+from functools import reduce
 
 from preprocessing.data_prepare import *
 from configuration.CONSTANTS import *
@@ -122,8 +123,8 @@ def get_movies_metadata_with_success_factor():
 # credits
 def prepare_credits_features(data):
     
-    data['cast'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'character', 'name'), data['cast']))
-    data['crew'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'job', 'name'), data['crew']))
+    data['cast'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'character', 'name', 'gender'), data['cast']))
+    data['crew'] = list(map(lambda x: get_essential_features(ast.literal_eval(x), 'job', 'name', 'gender'), data['crew']))
     data['id'] =  column_values_to_int(data['id'])
 
     return data
@@ -142,4 +143,24 @@ def get_essential_features(feature_data, *args):
 def get_processed_credits(data, empty_credits):
     data = data[data['id'].apply(lambda x: x not in empty_credits)]
     return data
-    
+
+
+def count_workers_by_gender(data, column):
+    data = list(map(lambda people: filter_people_by_gender(people), data[column]))
+    men, women, gender_not_defined = reduce(lambda tup1, tup2: (tup1[0] + tup2[0], tup1[1] + tup2[1], tup1[2] + tup2[2]), data)
+    return men, women, gender_not_defined
+
+def filter_people_by_gender(people):
+    man_count = 0
+    woman_count = 0
+    gender_not_defined = 0
+    for person in people:
+        if int(person['gender']) == 2:
+            man_count += 1
+        elif int(person['gender']) == 1:    
+            woman_count += 1 
+        else:
+            gender_not_defined += 1
+    return man_count, woman_count, gender_not_defined        
+
+
