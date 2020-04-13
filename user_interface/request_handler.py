@@ -18,13 +18,21 @@ def show_genres_histogram_by_month(month):
     show_genres_by_month_histogram(data, int(month))
 
 
+def show_months_by_genre(genre):
+    print(get_months_by_genre(genre).sort_values(by='rank', ascending=True).head(BEST_MONTHS_BY_GENRES_TAKEN_POSITIONS))
+
+
 def handle_request():
     parser = argparse.ArgumentParser(description='Movies and Actors Classification System (MACS)')
     parser.add_argument('-sg', help='Show list of available genres', action='store_true')
-    parser.add_argument('-g', metavar='N', nargs=1, help='Show list of most accurate genres for given month',
+    parser.add_argument('-m', metavar='month', nargs=1, help='Show list of most accurate genres for given month',
                         type=show_genres_by_month)
-    parser.add_argument('-gh', metavar='N', nargs=1, help='Show histogram of most accurate genres for given month',
+    parser.add_argument('-mh', metavar='month', nargs=1, help='Show histogram of most accurate genres for given month',
                         type=show_genres_histogram_by_month)
+    parser.add_argument('-g', metavar='genre', nargs=1, help='Show list of most accurate months for given genre',
+                        type=show_months_by_genre)
+    parser.add_argument('-gh', metavar='genre', nargs=1, help='Show histogram of most accurate months for given genre',
+                        type=show_months_histogram_by_genre)
 
     args = parser.parse_args()
 

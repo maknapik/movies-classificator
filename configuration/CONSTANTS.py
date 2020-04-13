@@ -24,7 +24,8 @@ DELTA = 0.50
 
 # analysis constants
 # number which indicates how many records should be taken when grouping by genre
-BEST_GENRES_BY_MOVIES_TAKEN_POSITIONS = 200
+BEST_GENRES_BY_MONTHS_TAKEN_POSITIONS = 200
+BEST_MONTHS_BY_GENRES_TAKEN_POSITIONS = 20
 
 # additional
 MONTHS_IDS = dict(

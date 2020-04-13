@@ -70,13 +70,13 @@ def get_best_genres_by_month(data, month):
 
     data = data.groupby('genres', as_index=False).count()[['genres', 'popularity']]
 
-    return data
+    return data.sort_values(by='popularity', ascending=False)
 
 
 def get_best_flatten_genres_by_month(data, month):
     return get_data_with_flatten_genres(data[data['release_date'] == month]) \
         .sort_values(by='success_factor', ascending=False) \
-        .head(BEST_GENRES_BY_MOVIES_TAKEN_POSITIONS)
+        .head(BEST_GENRES_BY_MONTHS_TAKEN_POSITIONS)
 
 
 def show_genres_by_month_histogram(data, month):
@@ -123,7 +123,35 @@ def pca_for_movies_metadata_with_ratings(data):
 def get_random_color():
     random_number = random.randint(1118481, 16777215)
     hex_number = str(hex(random_number))
-    return '#'+ hex_number[2:]
+    return '#' + hex_number[2:]
+
+
+def get_months_by_genre(genre):
+    data = get_movies_metadata_with_success_factor()
+    indices = []
+    for month in range(1, 13):
+        best = get_best_genres_by_month(data, month)
+        try:
+            indices.append(best['genres'].tolist().index(genre))
+        except ValueError:
+            indices.append(len(get_genres_unique(data)))
+
+    best = pandas.DataFrame({'month': list(MONTHS_IDS.values()), 'rank': indices})
+    best['rank'] = best['rank'].map(lambda x: x + 1)
+    return best
+
+
+def show_months_histogram_by_genre(genre):
+    data = get_months_by_genre(genre)
+    data['rank'] = data['rank'].map(lambda x: 1/x)
+
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    ax.bar(data['month'], data['rank'])
+    plt.title('Months histogram')
+    plt.suptitle('For genre: {}'.format(genre))
+    plt.ylabel('factor')
+    plt.xlabel('month')
+    plt.show()
 
 
 # credits

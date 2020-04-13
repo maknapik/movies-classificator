@@ -17,6 +17,7 @@ def round_column_by_digits(column, digits):
 def column_values_to_int(column):
     return column.map(lambda x: int(x))
 
+
 """filter movies ids which have empty crew and cast columns"""
 def filter_empty_movie_credits(data):
 
