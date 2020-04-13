@@ -4,6 +4,7 @@ import ast
 from sklearn.preprocessing import MinMaxScaler
 import numpy
 from functools import reduce
+from os.path import exists
 
 from preprocessing.data_prepare import *
 from configuration.CONSTANTS import *
@@ -119,6 +120,26 @@ def get_movies_metadata_with_success_factor():
     data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
 
     return data
+
+
+def get_movies_metadata_with_ratings():
+    if exists(MOVIES_METADATA_WITH_RATINGS_GENERATED):
+        data = pandas.read_csv(MOVIES_METADATA_WITH_RATINGS_GENERATED).fillna(0)
+        data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
+
+        return data
+
+    movies_metadata = get_movies_metadata()
+    ratings = get_ratings(get_movies_ids(movies_metadata))
+
+    data = join_movies_metadata_and_ratings(movies_metadata, ratings)
+    data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
+
+    return data
+
+
+def save_movies_metadata_with_ratings_to_file(data):
+    data.to_csv(MOVIES_METADATA_WITH_RATINGS_GENERATED, index=False)
 
 
 # credits

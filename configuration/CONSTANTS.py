@@ -4,6 +4,7 @@ KEYWORDS_PATH = "data/keywords.csv"
 MOVIES_METADATA_PATH = "data/movies_metadata.csv"
 RATINGS_PATH = "data/ratings_new.csv"
 MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED = "generated_data/movies_metadata_with_success_factor.csv"
+MOVIES_METADATA_WITH_RATINGS_GENERATED = "generated_data/movies_metadata_with_ratings.csv"
 
 # success_factor values
 SUCCESS_FACTOR_MAX = 100
@@ -24,3 +25,8 @@ DELTA = 0.50
 # analysis constants
 # number which indicates how many records should be taken when grouping by genre
 BEST_GENRES_BY_MOVIES_TAKEN_POSITIONS = 200
+
+# additional
+MONTHS_IDS = dict(
+    {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September",
+     10: "October", 11: "November", 12: "December"})

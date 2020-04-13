@@ -1,6 +1,7 @@
 from preprocessing.data_loader import *
 from preprocessing.data_prepare import *
 from analysis.data_analysis import *
+from user_interface.request_handler import handle_request
 
 from numpy import asarray
 from pandas import *
@@ -45,21 +46,21 @@ def main():
 
     # show_vote_count_histogram(data)
 
-    # data = join_movies_metadata_and_ratings(data, ratings)
+    # data = get_movies_metadata_with_ratings()
     # count_success_factors(data)
 
     # print(data['success_factor'].sort_values(ascending=True).head(100))
 
-    data = get_movies_metadata_with_success_factor()
+    # data = get_movies_metadata_with_success_factor()
     # print(data[data['release_date'] == 10].sort_values(by='success_factor', ascending=False)[
     #           ['title', 'success_factor', 'genres']].head(20))
     # print(data.columns)
     # print(get_genres_unique(data))
-    # print(get_data_with_flatten_genres(data[data['release_date'] == 10]).sort_values(by='success_factor', ascending=False).head(20))
+    # print(get_data_with_flatten_genres(data[data['release_date'] == 10]).sort_values(by='rating', ascending=False).head(20))
     # save_movies_metadata_with_success_factor_to_file(data)
     # print(get_best_genres_by_month(data, 3).sort_values(by='popularity', ascending=False))
 
-    show_genres_by_month_histogram(data, 3)
+    # show_genres_by_month_histogram(data, 3)
 
     # credits = dl.get_credits()
     # data = dl.prepare_credits_features(credits)
@@ -79,6 +80,9 @@ def main():
     # data = join_movies_metadata_and_ratings(movies[['id', 'popularity', 'income', 'vote_average', 'vote_count']],
     #                                         ratings)
     # show_heat_map(data.drop(columns=['id']))
+    # pca_for_movies_metadata_with_ratings()
+    # pca_for_movies_metadata_with_ratings(get_movies_metadata_with_ratings())
+    handle_request()
 
 
 if __name__ == '__main__':

@@ -3,6 +3,9 @@ from preprocessing.data_loader import *
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas
+import random
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 
 def show_column_statistics(column):
@@ -81,10 +84,46 @@ def show_genres_by_month_histogram(data, month):
 
     plt.hist(genres, pandas.unique(genres), facecolor='blue', alpha=1)
     plt.title('Genres histogram')
-    plt.suptitle('For month: {}'.format(month))
+    plt.suptitle('For month: {}'.format(MONTHS_IDS.get(month)))
     plt.ylabel('amount')
     plt.xlabel('genre')
     plt.show()
+
+
+def pca_for_movies_metadata_with_ratings(data):
+    features = ['popularity', 'vote_average', 'vote_count', 'income', 'rating']
+    f_data = data[features]
+    f_data = StandardScaler().fit_transform(f_data)
+
+    pca = PCA(n_components=2)
+    principal_components = pca.fit_transform(f_data)
+    principal_df = pandas.DataFrame(data=principal_components,
+                                    columns=['principal component 1', 'principal component 2'])
+
+    final_df = get_data_with_flatten_genres(pandas.concat([principal_df, data[['id', 'title', 'genres']]], axis=1))
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.set_xlabel('Principal Component 1', fontsize=15)
+    ax.set_ylabel('Principal Component 2', fontsize=15)
+    ax.set_title('2 component PCA', fontsize=20)
+    targets = get_genres_unique(data)
+    colors = [get_random_color() for x in range(len(targets))]
+    for target, color in zip(targets, colors):
+        indices_to_keep = final_df['genres'] == target
+        ax.scatter(final_df.loc[indices_to_keep, 'principal component 1']
+                   , final_df.loc[indices_to_keep, 'principal component 2']
+                   , c=color
+                   , s=50)
+    ax.legend(targets)
+    ax.grid()
+    plt.show()
+
+
+def get_random_color():
+    random_number = random.randint(1118481, 16777215)
+    hex_number = str(hex(random_number))
+    return '#'+ hex_number[2:]
 
 
 # credits
