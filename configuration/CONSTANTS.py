@@ -5,6 +5,7 @@ MOVIES_METADATA_PATH = "data/movies_metadata.csv"
 RATINGS_PATH = "data/ratings_new.csv"
 MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED = "generated_data/movies_metadata_with_success_factor.csv"
 MOVIES_METADATA_WITH_RATINGS_GENERATED = "generated_data/movies_metadata_with_ratings.csv"
+CREDITS_GENERATED = "generated_data/credits_generated.csv"
 
 # success_factor values
 SUCCESS_FACTOR_MAX = 100

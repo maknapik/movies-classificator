@@ -64,11 +64,15 @@ def main():
 
     # credits = dl.get_credits()
     # data = dl.prepare_credits_features(credits)
-    #
     # empty_list = filter_empty_movie_credits(data)
-    #
     # data = dl.get_processed_credits(data, empty_list)
-    #
+    
+    # dl.save_processed_credits_to_file(data)
+
+    best_genres = dl.get_best_genres_for_actor("Tom Hanks")
+    print(best_genres)
+    #print("DATA  = ", data[:2])
+
     # res1 = count_workers_by_gender(data, 'cast')
     # res2 = count_workers_by_gender(data, 'crew')
     # print("COUNT CAST MEN = {} and WOMEN = {} and NOT_DEFINED = {}".format(res1[0], res1[1], res1[2]))
@@ -82,7 +86,7 @@ def main():
     # show_heat_map(data.drop(columns=['id']))
     # pca_for_movies_metadata_with_ratings()
     # pca_for_movies_metadata_with_ratings(get_movies_metadata_with_ratings())
-    handle_request()
+    # handle_request()
 
 
 if __name__ == '__main__':

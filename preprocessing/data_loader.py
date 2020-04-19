@@ -11,7 +11,7 @@ from configuration.CONSTANTS import *
 
 
 def get_credits():
-    return pandas.read_csv(CREDITS_PATH)  # .to_dict()
+    return pandas.read_csv(CREDITS_PATH)
 
 
 def get_keywords():
@@ -172,6 +172,26 @@ def get_processed_credits(data, empty_credits):
     return data
 
 
+def save_processed_credits_to_file(data):
+    credits = get_credits()
+    data = prepare_credits_features(credits)
+    empty_list = filter_empty_movie_credits(data)
+    data = get_processed_credits(data, empty_list)
+    data.to_csv(CREDITS_GENERATED, index=False)
+
+
+def get_generated_credits():
+    if exists(CREDITS_GENERATED):
+        data = pandas.read_csv(CREDITS_GENERATED)
+        data['cast'] = list(data['cast'].map(lambda x: ast.literal_eval(x)))
+        data['crew'] = list(data['crew'].map(lambda x: ast.literal_eval(x)))
+        data['id'] = column_values_to_int(data['id'])
+        return data
+    else:
+        raise FileNotFoundError
+
+
+"""Below 2 functions to initial credits data analysis"""
 def count_workers_by_gender(data, column):
     data = list(map(lambda people: filter_people_by_gender(people), data[column]))
     men, women, gender_not_defined = reduce(
@@ -191,3 +211,48 @@ def filter_people_by_gender(people):
         else:
             gender_not_defined += 1
     return man_count, woman_count, gender_not_defined
+
+
+def get_best_genres_for_actor(actor_name):
+    credits = get_generated_credits()
+    movies_metadata = get_movies_metadata_with_success_factor()
+    genres = get_genres_unique(movies_metadata)
+    data = movies_metadata.join(credits.set_index('id'), on='id')
+
+    actor_best_genres = [ {'Genre': g, 'Amount': 0, 'Success': 0.0} for g in genres]
+    data = data.fillna(0)
+
+    data = data[data["cast"].apply(lambda x: is_actor_in_movie(x, actor_name))]
+    data = data.apply(lambda x: count_actor_genres_info(x.genres, x.success_factor, actor_best_genres, x.title), axis=1)
+    
+    #for genre_info in actor_best_genres:
+    #    print("GENRE = {} SUM_SUC = {} AMOUNT = {}".format(genre_info["Genre"], genre_info["Success"], genre_info["Amount"]))                    
+
+    genre_df = pandas.DataFrame(actor_best_genres)
+    genre_df_sorted = genre_df.sort_values(by="Success", ascending=False)
+
+    return genre_df_sorted.head(10)
+
+
+def count_actor_genres_info(genres, success_factor, actor_best_genres, title):
+    if success_factor == 0.0:
+        return None
+    for genre in genres:
+        for g in actor_best_genres:
+            if genre == g["Genre"]:
+                g["Amount"] += 1
+                g["Success"] += success_factor
+
+
+def is_actor_in_movie(movie_cast_data, actor_name):
+    if movie_cast_data == 0:
+        return False
+    for person_dict in movie_cast_data:
+        if person_dict["name"] == actor_name:
+            return True
+
+    return False
+
+
+
+
