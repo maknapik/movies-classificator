@@ -28,6 +28,9 @@ DELTA = 0.50
 BEST_GENRES_BY_MONTHS_TAKEN_POSITIONS = 200
 BEST_MONTHS_BY_GENRES_TAKEN_POSITIONS = 20
 
+# constant for selecting how many genres in which actor is specialized should appear in analysis result
+MAX_GENRES_ACTOR_SPECIALIZED = 10
+
 # additional
 MONTHS_IDS = dict(
     {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September",

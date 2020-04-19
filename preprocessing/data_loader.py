@@ -214,6 +214,7 @@ def filter_people_by_gender(people):
 
 
 def get_best_genres_for_actor(actor_name):
+    actor_name = actor_name.lower()
     credits = get_generated_credits()
     movies_metadata = get_movies_metadata_with_success_factor()
     genres = get_genres_unique(movies_metadata)
@@ -223,15 +224,16 @@ def get_best_genres_for_actor(actor_name):
     data = data.fillna(0)
 
     data = data[data["cast"].apply(lambda x: is_actor_in_movie(x, actor_name))]
+    if len(data) == 0:
+        return None
     data = data.apply(lambda x: count_actor_genres_info(x.genres, x.success_factor, actor_best_genres, x.title), axis=1)
-    
-    #for genre_info in actor_best_genres:
-    #    print("GENRE = {} SUM_SUC = {} AMOUNT = {}".format(genre_info["Genre"], genre_info["Success"], genre_info["Amount"]))                    
 
+    #for genre_info in actor_best_genres:
+    #    print("GENRE = {} SUM_SUC = {} AMOUNT = {}".format(genre_info["Genre"], genre_info["Success"], genre_info["Amount"]))
     genre_df = pandas.DataFrame(actor_best_genres)
     genre_df_sorted = genre_df.sort_values(by="Success", ascending=False)
 
-    return genre_df_sorted.head(10)
+    return genre_df_sorted.head(MAX_GENRES_ACTOR_SPECIALIZED)
 
 
 def count_actor_genres_info(genres, success_factor, actor_best_genres, title):
@@ -248,7 +250,7 @@ def is_actor_in_movie(movie_cast_data, actor_name):
     if movie_cast_data == 0:
         return False
     for person_dict in movie_cast_data:
-        if person_dict["name"] == actor_name:
+        if person_dict["name"].lower() == actor_name:
             return True
 
     return False

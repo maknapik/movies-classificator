@@ -22,6 +22,11 @@ def show_months_by_genre(genre):
     print(get_months_by_genre(genre).sort_values(by='rank', ascending=True).head(BEST_MONTHS_BY_GENRES_TAKEN_POSITIONS))
 
 
+def show_best_genres_for_actor(actor):
+    best_genres = get_best_genres_for_actor(actor)
+    print(best_genres) if best_genres is not None else print("Such actor does not exist in movies database")
+
+
 def handle_request():
     parser = argparse.ArgumentParser(description='Movies and Actors Classification System (MACS)')
     parser.add_argument('-sg', help='Show list of available genres', action='store_true')
@@ -33,6 +38,8 @@ def handle_request():
                         type=show_months_by_genre)
     parser.add_argument('-gh', metavar='genre', nargs=1, help='Show histogram of most accurate months for given genre',
                         type=show_months_histogram_by_genre)
+    parser.add_argument('-ag', metavar='actor', nargs=1, help='Show list of most accurate movie genres for given actor',
+                        type=show_best_genres_for_actor)
 
     args = parser.parse_args()
 
