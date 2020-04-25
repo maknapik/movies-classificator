@@ -77,7 +77,8 @@ def main():
     # show_credits_people_by_gender([res2[0], res2[1], res2[2]], "crew_gender.png")
     # data = get_movies_metadata_with_success_factor()
     # show_heat_map(data.drop(columns=['id']))
-    # pca_for_movies_metadata_with_ratings()
+    # factor = reduction_for_movies_metadata_with_ratings(get_movies_metadata_with_ratings(), 10, 'tsne', 3)
+    # print(factor)
     # pca_for_movies_metadata_with_ratings(get_movies_metadata_with_ratings())
 
     # best_genres = dl.get_best_genres_for_actor("Tom Hanks")

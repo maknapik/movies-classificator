@@ -1,11 +1,13 @@
 from preprocessing.data_loader import *
 
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 import pandas
 import random
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 
 def show_column_statistics(column):
@@ -68,9 +70,9 @@ def show_success_factor_histogram(data):
 def get_best_genres_by_month(data, month):
     data = get_best_flatten_genres_by_month(data, month)
 
-    data = data.groupby('genres', as_index=False).count()[['genres', 'popularity']]
+    data = data.groupby('genres', as_index=False)['success_factor'].mean()
 
-    return data.sort_values(by='popularity', ascending=False)
+    return data.sort_values(by='success_factor', ascending=False)
 
 
 def get_best_flatten_genres_by_month(data, month):
@@ -80,39 +82,93 @@ def get_best_flatten_genres_by_month(data, month):
 
 
 def show_genres_by_month_histogram(data, month):
-    genres = get_best_flatten_genres_by_month(data, month)['genres']
+    data = get_best_genres_by_month(data, month)
 
-    plt.hist(genres, pandas.unique(genres), facecolor='blue', alpha=1)
-    plt.title('Genres histogram')
+    plt.bar(data['genres'], data['success_factor'], alpha=1)
+    plt.title('Genres bar plot')
     plt.suptitle('For month: {}'.format(MONTHS_IDS.get(month)))
     plt.ylabel('amount')
     plt.xlabel('genre')
     plt.show()
 
 
-def pca_for_movies_metadata_with_ratings(data):
+def reduction_for_movies_metadata_with_ratings(data, month, method, components):
+    data = data[data['release_date'] == month]
+    f_data = prepare_data_for_reduction(data)
+
+    points_transformed = pandas.DataFrame()
+    file_path = GENERATED_DATA_SUFFIX + str(month) + "_" + method.upper() + "_" + str(components) + "_generated.npy"
+    if exists(file_path):
+        points_transformed = np.load(file_path)
+    elif method.upper() == 'PCA':
+        pca = PCA(n_components=components)
+        points_transformed = pca.fit_transform(f_data).reshape(components, f_data.shape[0])
+        np.save(file_path, points_transformed)
+    elif method.upper() == 'TSNE':
+        points_transformed = TSNE(n_components=components, metric="euclidean", perplexity=60).fit_transform(f_data).T
+        np.save(file_path, points_transformed)
+
+    principal_df = pandas.DataFrame()
+    if points_transformed.shape[0] == 2:
+        principal_df = pandas.DataFrame({'X': points_transformed[0], 'Y': points_transformed[1]})
+    elif points_transformed.shape[0] == 3:
+        principal_df = pandas.DataFrame(
+            {'X': points_transformed[0], 'Y': points_transformed[1], 'Z': points_transformed[2]})
+
+    visualize_principal_components(data, principal_df, month, method.upper())
+
+
+def visualize_principal_components(data, principal_df, month, method):
+    if principal_df.shape[1] == 2:
+        show_2d_reduction_plot(principal_df, data, month, method)
+    elif principal_df.shape[1] == 3:
+        show_3d_reduction_plot(principal_df, data, month, method)
+
+
+def prepare_data_for_reduction(data):
     features = ['popularity', 'vote_average', 'vote_count', 'income', 'rating']
     f_data = data[features]
-    f_data = StandardScaler().fit_transform(f_data)
 
-    pca = PCA(n_components=2)
-    principal_components = pca.fit_transform(f_data)
-    principal_df = pandas.DataFrame(data=principal_components,
-                                    columns=['principal component 1', 'principal component 2'])
+    return StandardScaler().fit_transform(f_data)
 
+
+def show_2d_reduction_plot(principal_df, data, month, method):
     final_df = get_data_with_flatten_genres(pandas.concat([principal_df, data[['id', 'title', 'genres']]], axis=1))
 
     fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(1, 1, 1)
     ax.set_xlabel('Principal Component 1', fontsize=15)
     ax.set_ylabel('Principal Component 2', fontsize=15)
-    ax.set_title('2 component PCA', fontsize=20)
+    ax.set_title('2 components reduction for month: {}, method: {}'.format(MONTHS_IDS.get(month), method), fontsize=20)
     targets = get_genres_unique(data)
     colors = [get_random_color() for x in range(len(targets))]
     for target, color in zip(targets, colors):
         indices_to_keep = final_df['genres'] == target
-        ax.scatter(final_df.loc[indices_to_keep, 'principal component 1']
-                   , final_df.loc[indices_to_keep, 'principal component 2']
+        ax.scatter(final_df.loc[indices_to_keep, 'X']
+                   , final_df.loc[indices_to_keep, 'Y']
+                   , c=color
+                   , s=50)
+    ax.legend(targets)
+    ax.grid()
+    plt.show()
+
+
+def show_3d_reduction_plot(principal_df, data, month, method):
+    final_df = get_data_with_flatten_genres(pandas.concat([principal_df, data[['id', 'title', 'genres']]], axis=1))
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.gca(projection='3d')
+    ax.set_xlabel('Principal Component 1', fontsize=15)
+    ax.set_ylabel('Principal Component 2', fontsize=15)
+    ax.set_zlabel('Principal Component 3', fontsize=15)
+    ax.set_title('3 components reduction for month: {}, method: {}'.format(MONTHS_IDS.get(month), method), fontsize=20)
+    targets = get_genres_unique(data)
+    colors = [get_random_color() for x in range(len(targets))]
+    for target, color in zip(targets, colors):
+        indices_to_keep = final_df['genres'] == target
+        ax.scatter(final_df.loc[indices_to_keep, 'X']
+                   , final_df.loc[indices_to_keep, 'Y']
+                   , final_df.loc[indices_to_keep, 'Z']
                    , c=color
                    , s=50)
     ax.legend(targets)
@@ -143,11 +199,11 @@ def get_months_by_genre(genre):
 
 def show_months_histogram_by_genre(genre):
     data = get_months_by_genre(genre)
-    data['rank'] = data['rank'].map(lambda x: 1/x)
+    data['rank'] = data['rank'].map(lambda x: 1 / x)
 
     fig, ax = plt.subplots(nrows=1, ncols=1)
     ax.bar(data['month'], data['rank'])
-    plt.title('Months histogram')
+    plt.title('Months plot')
     plt.suptitle('For genre: {}'.format(genre))
     plt.ylabel('factor')
     plt.xlabel('month')
