@@ -13,7 +13,7 @@ def show_genres_by_month(month):
     print(get_best_genres_by_month(data, int(month)))
 
 
-def show_genres_histogram_by_month(month):
+def show_genres_plot_by_month(month):
     data = get_movies_metadata_with_success_factor()
     show_genres_by_month_histogram(data, int(month))
 
@@ -39,7 +39,7 @@ def handle_request():
     parser.add_argument('-m', metavar='month', nargs=1, help='Show list of most accurate genres for given month',
                         type=show_genres_by_month)
     parser.add_argument('-mh', metavar='month', nargs=1, help='Show bar plot of most accurate genres for given month',
-                        type=show_genres_histogram_by_month)
+                        type=show_genres_plot_by_month)
     parser.add_argument('-g', metavar='genre', nargs=1, help='Show list of most accurate months for given genre',
                         type=show_months_by_genre)
     parser.add_argument('-gh', metavar='genre', nargs=1, help='Show plot of most accurate months for given genre',
