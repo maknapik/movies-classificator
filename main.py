@@ -75,10 +75,7 @@ def main():
     # print("COUNT CREW MEN = {} and WOMEN = {} and NOT_DEFINED = {}".format(res2[0], res2[1], res2[2]))
     # show_credits_people_by_gender([res1[0], res1[1], res1[2]], "cast_gender.png")
     # show_credits_people_by_gender([res2[0], res2[1], res2[2]], "crew_gender.png")
-    # movies = get_movies_metadata()
-    # ratings = get_ratings(get_movies_ids(movies))
-    # data = join_movies_metadata_and_ratings(movies[['id', 'popularity', 'income', 'vote_average', 'vote_count']],
-    #                                         ratings)
+    # data = get_movies_metadata_with_success_factor()
     # show_heat_map(data.drop(columns=['id']))
     # pca_for_movies_metadata_with_ratings()
     # pca_for_movies_metadata_with_ratings(get_movies_metadata_with_ratings())

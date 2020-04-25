@@ -87,7 +87,7 @@ def get_ratings(movies_ids):
 
 
 def join_movies_metadata_and_ratings(data, ratings):
-    return data.join(ratings.set_index('movieId'), on='id')
+    return data.join(ratings.set_index('movieId'), on='id').fillna(0)
 
 
 def count_success_factors(data):
@@ -115,16 +115,24 @@ def save_movies_metadata_with_success_factor_to_file(data):
 
 
 def get_movies_metadata_with_success_factor():
-    data = pandas.read_csv(MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED)
+    if exists(MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED):
+        data = pandas.read_csv(MOVIES_METADATA_WITH_SUCCESS_FACTOR_GENERATED)
 
-    data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
+        data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
+
+        return data
+
+    data = get_movies_metadata_with_ratings()
+    count_success_factors(data)
+
+    save_movies_metadata_with_success_factor_to_file(data)
 
     return data
 
 
 def get_movies_metadata_with_ratings():
     if exists(MOVIES_METADATA_WITH_RATINGS_GENERATED):
-        data = pandas.read_csv(MOVIES_METADATA_WITH_RATINGS_GENERATED).fillna(0)
+        data = pandas.read_csv(MOVIES_METADATA_WITH_RATINGS_GENERATED)
         data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
 
         return data
@@ -134,6 +142,8 @@ def get_movies_metadata_with_ratings():
 
     data = join_movies_metadata_and_ratings(movies_metadata, ratings)
     data['genres'] = data['genres'].map(lambda x: ast.literal_eval(x))
+
+    save_movies_metadata_with_ratings_to_file(data)
 
     return data
 
