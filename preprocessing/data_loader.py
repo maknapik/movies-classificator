@@ -266,5 +266,39 @@ def is_actor_in_movie(movie_cast_data, actor_name):
     return False
 
 
+"""feature to group actors which may cooperate better than others for given genre"""
+def get_best_actors_group_for_genre(genre):
+    
+    movies_metadata = get_movies_metadata_with_success_factor()
+    top_movies_in_genre = get_top_movies_in_genre(movies_metadata, genre)
+
+    credits = get_generated_credits()
+    credits = credits.drop(["crew"], axis=1)
+    top_movies_data = top_movies_in_genre.join(credits.set_index('id'), on='id')
+
+    best_actors_group = list(map(lambda movie: get_actors_from_movie(movie), top_movies_data["cast"]))
+    best_actors_group = [ actor for movie_actors in best_actors_group for actor in movie_actors]
+    best_actors_group_df = pandas.DataFrame(best_actors_group, columns=["Actor"])
+
+    print(best_actors_group_df)
+    return best_actors_group_df
+
+
+def get_top_movies_in_genre(movies_metadata, genre):
+    data_by_genre = movies_metadata[movies_metadata["genres"].apply(lambda x: genre in x)]
+    data_by_genre = data_by_genre.filter(items=["id", "title", "success_factor"])
+    data_by_genre = data_by_genre.sort_values(by="success_factor", ascending=False)
+    print(data_by_genre.head(MAX_TOP_RATED_MOV_IN_GENRE))
+    return data_by_genre.head(MAX_TOP_RATED_MOV_IN_GENRE)
+
+
+def get_actors_from_movie(movie_cast):
+    people = []
+    size_factor = int(len(movie_cast) / MAX_ACTOR_GROUP_SIZE_FROM_MOVIE_FAC)
+    for i in range(size_factor):
+        people.append(movie_cast[i]["name"]) # movie_cast[i] is a dict
+
+    return people    
+
 
 
