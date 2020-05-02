@@ -238,12 +238,10 @@ def get_best_genres_for_actor(actor_name):
         return None
     data = data.apply(lambda x: count_actor_genres_info(x.genres, x.success_factor, actor_best_genres, x.title), axis=1)
 
-    #for genre_info in actor_best_genres:
-    #    print("GENRE = {} SUM_SUC = {} AMOUNT = {}".format(genre_info["Genre"], genre_info["Success"], genre_info["Amount"]))
     genre_df = pandas.DataFrame(actor_best_genres)
     genre_df_sorted = genre_df.sort_values(by="Success", ascending=False)
 
-    return genre_df_sorted.head(MAX_GENRES_ACTOR_SPECIALIZED)
+    return genre_df_sorted.head(MAX_GENRES_ACTOR_SPECIALIZED).reset_index(drop=True)
 
 
 def count_actor_genres_info(genres, success_factor, actor_best_genres, title):
@@ -277,8 +275,8 @@ def get_best_actors_group_for_genre(genre, exploreMore):
     best_actors_group = list(map(lambda movie: get_actors_from_movie(movie, genre, exploreMore), top_movies_data["cast"]))
     best_actors_group = [ actor for movie_actors in best_actors_group for actor in movie_actors]
     best_actors_group_df = pandas.DataFrame(best_actors_group, columns=["actor"])
-
-    return best_actors_group_df["actor"].drop_duplicates()
+    best_actors_group_df = pandas.DataFrame(best_actors_group_df["actor"].drop_duplicates()).reset_index(drop=True)
+    return best_actors_group_df
 
 
 def get_top_movies_in_genre(genre):
@@ -286,7 +284,7 @@ def get_top_movies_in_genre(genre):
     data_by_genre = movies_metadata[movies_metadata["genres"].apply(lambda x: genre in x)]
     data_by_genre = data_by_genre.filter(items=["id", "title", "success_factor"])
     data_by_genre = data_by_genre.sort_values(by="success_factor", ascending=False)
-    return data_by_genre.head(MAX_TOP_RATED_MOV_IN_GENRE)
+    return (data_by_genre.head(MAX_TOP_RATED_MOV_IN_GENRE)).reset_index(drop=True)
 
 
 def get_actors_from_movie(movie_cast, genre, exploreMore):
