@@ -84,7 +84,8 @@ def main():
     # best_genres = dl.get_best_genres_for_actor("Tom Hanks")
     # print(best_genres)
     # handle_request()
-    dl.get_best_actors_group_for_genre("Animation")
+    dl.get_best_actors_group_for_genre("Drama")
+    #dl.get_top_movies_in_genre("Drama")
 
 
 if __name__ == '__main__':
