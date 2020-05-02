@@ -63,7 +63,7 @@ def handle_request():
     parser.add_argument('-hm', help='Show heat-map of movies\' features', action='store_true')
     parser.add_argument('-bgm', metavar='genre', nargs=1, help='Show list of best movies for given genre',
                         type=show_best_movies_for_genre)
-    parser.add_argument('-agg', nargs=1, help='Show list of actors group for given genre',
+    parser.add_argument('-agg', metavar='genre', nargs=1, help='Show list of actors group for given genre',
                         action='store')
     parser.add_argument('--exploreMore', help='Conduct more detailed exploration of best actors group for genre',
                          action='store_true')                    
