@@ -24,12 +24,14 @@ def show_months_by_genre(genre):
 
 def show_best_genres_for_actor(actor):
     best_genres = get_best_genres_for_actor(actor)
-    print(best_genres) if best_genres is not None else print("Such actor does not exist in movies database")
+    show_best_genres_for_actor_pie(best_genres, actor, "top_genr.png") if best_genres is not None \
+                                                       else print("Such actor does not exist in movies database")
 
 
 def show_best_movies_for_genre(genre):
     top_movies_in_genre = get_top_movies_in_genre(genre)
-    print(top_movies_in_genre) if len(top_movies_in_genre) != 0 else print("Such genre does not exist in movies database")
+    show_best_movies_for_genre_pie(top_movies_in_genre, genre, "top_mov.png") if len(top_movies_in_genre) != 0 \
+                                                       else print("Such genre does not exist in movies database")
 
 
 def show_best_actors_group_for_genre(genre, exploreMore=False):

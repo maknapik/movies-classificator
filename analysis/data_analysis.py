@@ -1,6 +1,8 @@
 from preprocessing.data_loader import *
+from configuration.CONSTANTS import *
 
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numpy as np
 import seaborn as sns
 import pandas
@@ -223,6 +225,34 @@ def show_credits_people_by_gender(genders_appearance, file_name):
         plt.text(x=i, y=d, s=str(d), horizontalalignment='center')
     plt.savefig(file_name)
 
+
+def show_best_movies_for_genre_pie(top_movies_in_genre, genre, file_name):
+    print(top_movies_in_genre)
+    values = top_movies_in_genre["success_factor"]
+    labels = top_movies_in_genre["title"]
+    size = MAX_TOP_RATED_MOV_IN_GENRE
+    print("\nSTATISTICS SUCCESS_FACTOR:\n" ,values.describe())
+    cgen = cm.Set1(np.arange(size)/size)
+    explode = np.zeros(size)
+    explode[0] = 0.2
+    plt.pie(values, colors=cgen, labels=labels, explode=explode, autopct="%1.1f%%", counterclock=False, shadow=True)
+    plt.title("Best movies in genre " + genre)
+    plt.savefig("generated_data/"+file_name)
+
+
+def show_best_genres_for_actor_pie(best_genres, actor, file_name):
+    print(best_genres)
+    values = best_genres["Success"]
+    labels = best_genres["Genre"]
+    size = MAX_GENRES_ACTOR_SPECIALIZED
+    print("\nSTATISTICS SUCCESS:\n" ,values.describe())
+    print("\nSTATISTICS APPEARANCE AMOUNT:\n" ,best_genres["Amount"].describe())
+    cgen = cm.Set1(np.arange(size)/size)
+    explode = np.zeros(size)
+    explode[0] = 0.2
+    plt.pie(values, colors=cgen, labels=labels, explode=explode, autopct="%1.1f%%", counterclock=False, shadow=True)
+    plt.title("Best genres for actor " + actor)
+    plt.savefig("generated_data/"+file_name)
 
 def show_heat_map(data):
     colormap = plt.cm.viridis
