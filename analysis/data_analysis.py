@@ -244,7 +244,7 @@ def show_best_genres_for_actor_pie(best_genres, actor, file_name):
     print(best_genres)
     values = best_genres["Success"]
     labels = best_genres["Genre"]
-    size = MAX_GENRES_ACTOR_SPECIALIZED
+    size = MAX_GENRES_ACTOR_SPECIALIZED if len(values) == MAX_GENRES_ACTOR_SPECIALIZED else len(values)
     print("\nSTATISTICS SUCCESS:\n" ,values.describe())
     print("\nSTATISTICS APPEARANCE AMOUNT:\n" ,best_genres["Amount"].describe())
     cgen = cm.Set1(np.arange(size)/size)

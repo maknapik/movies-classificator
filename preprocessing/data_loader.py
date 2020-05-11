@@ -240,8 +240,9 @@ def get_best_genres_for_actor(actor_name):
 
     genre_df = pandas.DataFrame(actor_best_genres)
     genre_df_sorted = genre_df.sort_values(by="Success", ascending=False)
-
-    return genre_df_sorted.head(MAX_GENRES_ACTOR_SPECIALIZED).reset_index(drop=True)
+    genre_df_sorted = genre_df_sorted.head(MAX_GENRES_ACTOR_SPECIALIZED)
+    genre_df_sorted = genre_df_sorted[genre_df_sorted["Amount"] != 0]
+    return genre_df_sorted.reset_index(drop=True)
 
 
 def count_actor_genres_info(genres, success_factor, actor_best_genres, title):
