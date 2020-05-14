@@ -212,6 +212,16 @@ def show_months_histogram_by_genre(genre):
     plt.show()
 
 
+def get_best_genres_for_months(data):
+    best_genres = []
+    for month in MONTHS_IDS:
+        best_genres.append([MONTHS_IDS[month],
+                            get_best_genres_by_month(data, month).sort_values(by='success_factor', ascending=False)[
+                                'genres'].iloc[0]])
+
+    return best_genres
+
+
 # credits
 def show_credits_people_by_gender(genders_appearance, file_name):
     data = ["Man", "Woman", "Not_defined"]
@@ -231,13 +241,13 @@ def show_best_movies_for_genre_pie(top_movies_in_genre, genre, file_name):
     values = top_movies_in_genre["success_factor"]
     labels = top_movies_in_genre["title"]
     size = MAX_TOP_RATED_MOV_IN_GENRE
-    print("\nSTATISTICS SUCCESS_FACTOR:\n" ,values.describe())
-    cgen = cm.Set1(np.arange(size)/size)
+    print("\nSTATISTICS SUCCESS_FACTOR:\n", values.describe())
+    cgen = cm.Set1(np.arange(size) / size)
     explode = np.zeros(size)
     explode[0] = 0.2
     plt.pie(values, colors=cgen, labels=labels, explode=explode, autopct="%1.1f%%", counterclock=False, shadow=True)
     plt.title("Best movies in genre " + genre)
-    plt.savefig("generated_data/"+file_name)
+    plt.savefig("generated_data/" + file_name)
 
 
 def show_best_genres_for_actor_pie(best_genres, actor, file_name):
@@ -245,14 +255,15 @@ def show_best_genres_for_actor_pie(best_genres, actor, file_name):
     values = best_genres["Success"]
     labels = best_genres["Genre"]
     size = MAX_GENRES_ACTOR_SPECIALIZED if len(values) == MAX_GENRES_ACTOR_SPECIALIZED else len(values)
-    print("\nSTATISTICS SUCCESS:\n" ,values.describe())
-    print("\nSTATISTICS APPEARANCE AMOUNT:\n" ,best_genres["Amount"].describe())
-    cgen = cm.Set1(np.arange(size)/size)
+    print("\nSTATISTICS SUCCESS:\n", values.describe())
+    print("\nSTATISTICS APPEARANCE AMOUNT:\n", best_genres["Amount"].describe())
+    cgen = cm.Set1(np.arange(size) / size)
     explode = np.zeros(size)
     explode[0] = 0.2
     plt.pie(values, colors=cgen, labels=labels, explode=explode, autopct="%1.1f%%", counterclock=False, shadow=True)
     plt.title("Best genres for actor " + actor)
-    plt.savefig("generated_data/"+file_name)
+    plt.savefig("generated_data/" + file_name)
+
 
 def show_heat_map(data):
     colormap = plt.cm.viridis
