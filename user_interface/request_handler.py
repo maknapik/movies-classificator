@@ -24,8 +24,16 @@ def show_months_by_genre(genre):
 
 def show_best_genres_for_months():
     data = get_movies_metadata_with_success_factor()
+    print("The best genres for each month")
     for (month, genre) in get_best_genres_for_months(data):
         print("{}: {}".format(month, genre))
+
+
+def show_best_months_for_genres():
+    data = get_movies_metadata_with_success_factor()
+    print("The best months for each genre")
+    for (genre, month) in get_best_months_for_genres(data):
+        print("{}: {}".format(genre, month))
 
 
 def show_best_genres_for_actor(actor):
@@ -66,6 +74,8 @@ def handle_request():
                         type=show_months_histogram_by_genre)
     parser.add_argument('-bg', help='Show list of the best genres for each month',
                         action='store_true')
+    parser.add_argument('-bm', help='Show list of the best months for each genre',
+                        action='store_true')
     parser.add_argument('-agn', metavar='actor', nargs=1,
                         help='Show list of the most accurate movie genres for given actor',
                         type=show_best_genres_for_actor)
@@ -86,6 +96,8 @@ def handle_request():
         show_available_genres()
     elif args.bg:
         show_best_genres_for_months()
+    elif args.bm:
+        show_best_months_for_genres()
     elif args.hm:
         show_heat_map(get_movies_metadata_with_success_factor().drop(columns=['id', 'title', 'genres']))
     elif args.agg and args.exploreMore:

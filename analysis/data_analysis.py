@@ -222,6 +222,14 @@ def get_best_genres_for_months(data):
     return best_genres
 
 
+def get_best_months_for_genres(data):
+    best_months = []
+    for genre in get_genres_unique(data):
+        best_months.append([genre, get_months_by_genre(genre).sort_values(by='rank')['month'].iloc[0]])
+
+    return best_months
+
+
 # credits
 def show_credits_people_by_gender(genders_appearance, file_name):
     data = ["Man", "Woman", "Not_defined"]
