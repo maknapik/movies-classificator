@@ -274,9 +274,14 @@ def get_best_actors_group_for_genre(genre, exploreMore):
     top_movies_data = top_movies_in_genre.join(credits.set_index('id'), on='id')
 
     best_actors_group = list(map(lambda movie: get_actors_from_movie(movie, genre, exploreMore), top_movies_data["cast"]))
-    best_actors_group = [ actor for movie_actors in best_actors_group for actor in movie_actors]
-    best_actors_group_df = pandas.DataFrame(best_actors_group, columns=["actor"])
-    best_actors_group_df = pandas.DataFrame(best_actors_group_df["actor"].drop_duplicates()).reset_index(drop=True)
+    
+    best_actors_group = [ actor_data for movie_actors in best_actors_group for actor_data in movie_actors]
+    if exploreMore:
+        best_actors_group_df = pandas.DataFrame(best_actors_group, columns=["Actor", "Amount", "Success"]) \
+                                     .sort_values(by="Success", ascending=False)
+    else:    
+        best_actors_group_df = pandas.DataFrame(best_actors_group, columns=["Actor"])
+    best_actors_group_df = pandas.DataFrame(best_actors_group_df.drop_duplicates(subset=["Actor"])).reset_index(drop=True)
     return best_actors_group_df
 
 
@@ -293,9 +298,12 @@ def get_actors_from_movie(movie_cast, genre, exploreMore):
     size_factor = int(len(movie_cast) / MAX_ACTOR_GROUP_SIZE_FROM_MOVIE_FAC)
     for i in range(size_factor):
         actor = movie_cast[i]["name"]
-        if exploreMore and should_be_in_best_group(actor, genre):
-            people.append(actor)
-        elif not exploreMore:
+        if exploreMore:
+            should_be_in_group, actor_data = should_be_in_best_group(actor, genre)
+            if should_be_in_group:
+                people.append(dict({"Actor": actor, "Amount": int(actor_data["Amount"]),\
+                                    "Success": float(actor_data["Success"])})) 
+        else:
             people.append(actor) # movie_cast[i] is a dict
 
     return people    
@@ -305,5 +313,5 @@ def should_be_in_best_group(actor, genre):
     actor_best_genres = get_best_genres_for_actor(actor)
     actor_best_genres = actor_best_genres.head(MAX_TOP_GENRES_TO_ADD_ACTOR_TO_GROUP)
     data_filtered = actor_best_genres[actor_best_genres["Genre"] == genre]
-    return len(data_filtered) != 0
+    return (len(data_filtered) != 0, data_filtered)
 

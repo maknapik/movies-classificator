@@ -273,6 +273,13 @@ def show_best_genres_for_actor_pie(best_genres, actor, file_name):
     plt.savefig("generated_data/" + file_name)
 
 
+def show_summary_for_best_actors_group(best_actors_group_in_genre, exploreMore):
+    print(best_actors_group_in_genre)
+    if exploreMore:
+        print("\nSTATISTICS SUCCESS:\n", best_actors_group_in_genre["Success"].describe())
+        print("\nSTATISTICS APPEARANCE AMOUNT:\n", best_actors_group_in_genre["Amount"].describe())
+
+
 def show_heat_map(data):
     colormap = plt.cm.viridis
     plt.figure(figsize=(12, 12))

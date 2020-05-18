@@ -50,7 +50,7 @@ def show_best_movies_for_genre(genre):
 
 def show_best_actors_group_for_genre(genre, exploreMore=False):
     best_actors_group_in_genre = get_best_actors_group_for_genre(genre, exploreMore)
-    print(best_actors_group_in_genre) if len(best_actors_group_in_genre) != 0 \
+    show_summary_for_best_actors_group(best_actors_group_in_genre, exploreMore) if len(best_actors_group_in_genre) != 0 \
         else print("Can not find best actors group in movies database")
 
 
